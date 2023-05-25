@@ -1,0 +1,12 @@
+pandas
+numpy
+datetime
+tqdm
+seaborn
+matplotlib
+scikit-learn
+xgboost
+joblib
+category_encoders
+flask
+flask_cors
