@@ -39,7 +39,9 @@ def generate_forcast():
     categories_json = [{'domain': row['family'], 'measure': row['unit_sales']} for row in categories_input]
     res['categories'] = categories_json
 
-    items_input = top_items.to_dict(orient='records')
+    items_input = pd.read_csv('output/items.csv')
+    items_input['item_nbr'] = items_input['item_nbr'].astype(str)
+    items_input = items_input.to_dict(orient='records')
     items_json = [{'domain': row['item_nbr'], 'measure': row['unit_sales']} for row in items_input]
     res['items'] = items_json
 
@@ -56,7 +58,9 @@ def quick_predict():
     categories_json = [{'domain': row['family'], 'measure': row['unit_sales']} for row in categories_input]
     res['categories'] = categories_json
 
-    items_input = pd.read_csv('output/items.csv').to_dict(orient='records')
+    items_input = pd.read_csv('output/items.csv')
+    items_input['item_nbr'] = items_input['item_nbr'].astype(str)
+    items_input = items_input.to_dict(orient='records')
     items_json = [{'domain': row['item_nbr'], 'measure': row['unit_sales']} for row in items_input]
     res['items'] = items_json
 
