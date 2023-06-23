@@ -8,12 +8,10 @@ from generate import generate
 
 app = Flask(__name__)
 CORS(app)
+train_df = None
 
 @app.route('/train', methods=['GET'])
 def train_model():
-    print('Loading raw data!!!')
-    train_df = pd.read_csv('data/train.csv', skiprows=range(1, 101688780))
-
     print('\nTRAINING HAS BEGUN')
     print('*'*75)
     train(train_df)
@@ -21,10 +19,11 @@ def train_model():
 
 @app.route('/predict', methods=['GET'])
 def generate_forcast():
-    print('Loading raw data!!!')
-    train_df = pd.read_csv('data/train.csv', skiprows=range(1, 101688780))
+    year = int(request.args.get('year'))
+    month = int(request.args.get('month'))
+    day = int(request.args.get('day'))
     
-    predictions = generate(train_df, 2017, 8, 16)
+    predictions = generate(train_df, year, month, day)
     predictions = common.merge(predictions)
     top_categories = common.top_categories(predictions)
     top_stores = common.top_stores(predictions)
@@ -48,7 +47,6 @@ def generate_forcast():
     stores_json = [{'domain': row['state'], 'measure': row['unit_sales']} for row in stores_input]
     res['stores'] = stores_json
 
-    print(res)
     return(jsonify(res))
 
 @app.route('/quick-predict', methods=['GET'])
@@ -70,4 +68,6 @@ def quick_predict():
     return(jsonify(res))
 
 if __name__ == '__main__':
+    print('Loading raw data!!!')
+    train_df = pd.read_csv('data/train.csv', low_memory=False)
     app.run('0.0.0.0', port=5000)
